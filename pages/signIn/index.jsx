@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Pressable } from 'react-native'
 import styles from './styles'
 
 export default function Login({ navigation }) {
@@ -12,13 +12,13 @@ export default function Login({ navigation }) {
                 <Text style={styles.title}>Login</Text>
             </View>
             <TextInput
-                placeholder='email'
+                placeholder='Email'
                 onChangeText={setEmail}
                 value={email}
                 style={styles.caixa}
             />
             <TextInput
-                placeholder='password'
+                placeholder='Password'
                 onChangeText={setPassword}
                 value={password}
                 style={styles.caixa}
@@ -27,7 +27,7 @@ export default function Login({ navigation }) {
 
             <TouchableOpacity
                 style={styles.btnOk}
-                //onPress={logar}
+                onPress={()=>navigation.navigate('Read')}
             >
                 <Text style={{ fontSize: 25 }}>Sign In</Text>
             </TouchableOpacity>

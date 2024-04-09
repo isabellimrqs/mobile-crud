@@ -18,12 +18,12 @@ function MyTabs() {
         <Tab.Navigator
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: 'black',
+                    backgroundColor: 'lightblue',
                     paddingBottom: 1,
                     paddingTop: 1,
                     borderTopColor: 'transparent'
                 },
-                tabBarActiveTintColor: '#f0f',
+                tabBarActiveTintColor: 'white',
                 tabBarInactiveTintColor: '#555'
             }}
 
@@ -32,6 +32,7 @@ function MyTabs() {
                 name="SignIn"
                 component={SignIn}
                 options={{
+                    headerShown:false,
                     tabBarStyle: { display: 'none' },
                     tabBarIcon: ({ size, color }) => (
                         <Feather name="user" size={size} color={color} />
@@ -42,7 +43,7 @@ function MyTabs() {
                 name="Home"
                 component={Home}
                 options={{
-                    // headerShown:false,
+                    headerShown:false,
                     tabBarIcon: ({ size, color }) => (
                         <Feather name="home" size={size} color={color} />
                     )
@@ -52,7 +53,7 @@ function MyTabs() {
                 name="Create"
                 component={Create}
                 options={{
-                    // headerShown:false,
+                    headerShown:false,
                     tabBarIcon: ({ size, color }) => (
                         <Feather name="folder-plus" size={size} color={color} />
                     )
@@ -61,7 +62,7 @@ function MyTabs() {
                 name="Read"
                 component={Read}
                 options={{
-                    // headerShown:false,
+                    headerShown:false,
                     tabBarIcon: ({ size, color }) => (
                         <Feather name="file" size={size} color={color} />
                     )
@@ -71,7 +72,7 @@ function MyTabs() {
                 name="Update"
                 component={Update}
                 options={{
-                    // headerShown:false,
+                    headerShown:false,
                     tabBarIcon: ({ size, color }) => (
                         <Feather name="edit" size={size} color={color} />
                     )
@@ -81,7 +82,7 @@ function MyTabs() {
                 name="Delete"
                 component={Delete}
                 options={{
-                    // headerShown:false,
+                    headerShown:false,
                     tabBarIcon: ({ size, color }) => (
                         <Feather name="delete" size={size} color={color} />
                     )
@@ -121,12 +122,12 @@ export default function Routers() {
                     component={SignUp}
                     options={{ headerShown: false }}
                 />
-
                 <Pilha.Screen
                     name="Create"
                     component={Create}
                     options={{ headerShown: false }}
                 />
+
 
                 <Pilha.Screen
                     name="Read"
