@@ -1,7 +1,8 @@
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { View, Text, Pressable, TextInput } from "react-native"
 import styles from "./styles"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Delete(){
     const [userId, setUserId] = useState('')
@@ -13,22 +14,39 @@ export default function Delete(){
     const [cep, setCep] = useState('')
     const [email, setEmail] = useState('')
     const [numero, setNumero] = useState('')
+    const [token, setToken] = useState(null)
+    
+    useEffect(()=> {
+        AsyncStorage.getItem('token')
+        .then((tokenX)=>{
+            if(tokenX){
+                setToken(tokenX)
+                console.log("Token Delete: ", token);
+            }
+        }).catch(error=>{
+            console.log(error);
+        })
+    }, [token])
 
-    const buscar = ()=>{
-        axios.get('http://127.0.0.1:8000/api/usuario/'+userId)
-        .then((response)=>{
-            setNome(response.data.nome)
-            setRua(response.data.rua)
-            setBairro(response.data.bairro)
-            setCidade(response.data.cidade)
-            setUf(response.data.uf)
-            setCep(response.data.cep)
-            setEmail(response.data.email)
-            setNumero(response.data.numero)
-        })
-        .catch((erro)=>{
+    const buscar = async ()=>{
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/usuario/'+userId,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setNome(response.data.nome),
+            setRua(response.data.rua),
+            setBairro(response.data.bairro),
+            setCidade(response.data.cidade),
+            setUf(response.data.uf),
+            setCep(response.data.cep),
+            setEmail(response.data.email),
+            setNumero(response.data.numero)    
+        }catch(erro){
             console.log(erro)
-        })
+        }
     }
 
     const dados = {
@@ -42,23 +60,30 @@ export default function Delete(){
         numero: numero
     };
 
-    const deletar = () => {
-    axios.delete('http://127.0.0.1:8000/api/usuario/' + userId, { data: dados })
-        .then((response) => {
-            console.log("excluído");
-            setUserId('');
-            setNome('');
-            setRua('');
-            setBairro('');
-            setCidade('');
-            setUf('');
-            setCep('');
-            setEmail('');
-            setNumero('');
-        })
-        .catch((erro) => {
-            console.log(erro);
-        });
+    const deletar = async () => {
+        try{
+            const response = await axios.delete('http://127.0.0.1:8000/api/usuario/' + userId, 
+            { 
+                data: dados,
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+             })
+                console.log("excluído");
+                setUserId('');
+                setNome('');
+                setRua('');
+                setBairro('');
+                setCidade('');
+                setUf('');
+                setCep('');
+                setEmail('');
+                setNumero('');
+        }catch(e){
+            console.log(e)
+        }
+            
+            
 };
 
 

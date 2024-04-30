@@ -1,7 +1,8 @@
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { View, Text, Pressable, TextInput } from "react-native"
 import styles from "./styles"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Create(){
     //const [userId, setUserId] = useState('')
@@ -13,35 +14,53 @@ export default function Create(){
     const [cep, setCep] = useState('')
     const [email, setEmail] = useState('')
     const [numero, setNumero] = useState('')
+    const [token, setToken] = useState(null)
 
-    const inserir = () => {
-        const dados = {
-            'nome': nome,
-            'rua': rua,
-            'bairro': bairro,
-            'cidade': cidade,
-            'uf': uf,
-            'cep': cep,
-            'email': email,
-            'numero': numero
-        };
-    
-        axios.post('http://127.0.0.1:8000/api/usuarios', dados)
-        .then((response)=>{
-            setNome('')
-            setRua('')
-            setBairro('')
-            setCidade('')
-            setUf('')
-            setCep('')
-            setEmail('')
-            setNumero('')
-            console.log("cadastrado")
+    useEffect(()=> {
+        AsyncStorage.getItem('token')
+        .then((tokenA)=>{
+            if(tokenA){
+                setToken(tokenA)
+                console.log("Token Create: ", token);
+            }
+        }).catch(error=>{
+            console.log(error);
         })
-        .catch((erro)=>{
-            console.log(erro)
-        });
+    }, [token])
+
+    const dados = {
+        'nome': nome,
+        'rua': rua,
+        'bairro': bairro,
+        'cidade': cidade,
+        'uf': uf,
+        'cep': cep,
+        'email': email,
+        'numero': numero
+    };
+
+    const inserir = async () => {
+        try{
+            const response = await axios.post('http://127.0.0.1:8000/api/usuarios', dados,
+            { 
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+             })
+                setNome('')
+                setRua('')
+                setBairro('')
+                setCidade('')
+                setUf('')
+                setCep('')
+                setEmail('')
+                setNumero('')
+                console.log("cadastrado")
+        }catch(e){
+            console.log(e)
+        }  
     
+
     }
 
 

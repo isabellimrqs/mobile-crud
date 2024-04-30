@@ -40,6 +40,17 @@ function MyTabs() {
                 }}
             />
             <Tab.Screen
+                name="SignUp"
+                component={SignUp}
+                options={{
+                    headerShown:false,
+                    tabBarStyle: { display: 'none' },
+                    tabBarIcon: ({ size, color }) => (
+                        <Feather name="user" size={size} color={color} />
+                    )
+                }}
+            />
+            <Tab.Screen
                 name="Home"
                 component={Home}
                 options={{

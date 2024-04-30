@@ -1,7 +1,8 @@
 import axios from "axios"
-import { useState } from "react"
+import { useState,  useEffect } from "react"
 import { View, Text, Pressable, TextInput } from "react-native"
 import styles from "./styles"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Read(){
     const [userId, setUserId] = useState('')
@@ -13,22 +14,40 @@ export default function Read(){
     const [cep, setCep] = useState('')
     const [email, setEmail] = useState('')
     const [numero, setNumero] = useState('')
-
-    const buscar = ()=>{
-        axios.get('http://127.0.0.1:8000/api/usuario/'+userId)
-        .then((response)=>{
-            setNome(response.data.nome)
-            setRua(response.data.rua)
-            setBairro(response.data.bairro)
-            setCidade(response.data.cidade)
-            setUf(response.data.uf)
-            setCep(response.data.cep)
-            setEmail(response.data.email)
-            setNumero(response.data.numero)
+    const [token, setToken] = useState(null)
+    
+    useEffect(()=> {
+        AsyncStorage.getItem('token')
+        .then((tokenY)=>{
+            if(tokenY){
+                setToken(tokenY)
+                console.log("Token Read: ", token);
+            }
+        }).catch(error=>{
+            console.log(error);
         })
-        .catch((erro)=>{
+    }, [token])
+    
+    const buscar = async ()=>{
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/usuario/'+userId,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setNome(response.data.nome),
+            setRua(response.data.rua),
+            setBairro(response.data.bairro),
+            setCidade(response.data.cidade),
+            setUf(response.data.uf),
+            setCep(response.data.cep),
+            setEmail(response.data.email),
+            setNumero(response.data.numero)    
+        }catch(erro){
+            setErro(erro.response.status)
             console.log(erro)
-        })
+        }
     }
 
     return(

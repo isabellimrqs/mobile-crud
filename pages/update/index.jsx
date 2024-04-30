@@ -1,7 +1,8 @@
 import axios from "axios"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { View, Text, Pressable, TextInput } from "react-native"
 import styles from "./styles"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function Update(){
     const [userId, setUserId] = useState('')
@@ -13,51 +14,78 @@ export default function Update(){
     const [cep, setCep] = useState('')
     const [email, setEmail] = useState('')
     const [numero, setNumero] = useState('')
+    const [token, setToken] = useState(null)
 
-    const buscar = ()=>{
-        axios.get('http://127.0.0.1:8000/api/usuario/'+userId)
-        .then((response)=>{
-            setNome(response.data.nome)
-            setRua(response.data.rua)
-            setBairro(response.data.bairro)
-            setCidade(response.data.cidade)
-            setUf(response.data.uf)
-            setCep(response.data.cep)
-            setEmail(response.data.email)
-            setNumero(response.data.numero)
+
+    useEffect(()=> {
+        AsyncStorage.getItem('token')
+        .then((tokenZ)=>{
+            if(tokenZ){
+                setToken(tokenZ)
+                console.log("Token Update: ", token);
+            }
+        }).catch(error=>{
+            console.log(error);
         })
-        .catch((erro)=>{
+    }, [token])
+
+    const buscar = async ()=>{
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/usuario/'+userId,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setNome(response.data.nome),
+            setRua(response.data.rua),
+            setBairro(response.data.bairro),
+            setCidade(response.data.cidade),
+            setUf(response.data.uf),
+            setCep(response.data.cep),
+            setEmail(response.data.email),
+            setNumero(response.data.numero)    
+        }catch(erro){
             console.log(erro)
-        })
+        }
     }
 
-    const atualizar = () => {
-        axios.put('http://127.0.0.1:8000/api/usuario/'+userId, {
-            'nome': nome,
-            'rua': rua,
-            'bairro': bairro,
-            'cidade': cidade,
-            'uf': uf,
-            'cep': cep,
-            'email': email,
-            'numero': numero
-    })
-        .then((response)=>{
-            setNome('')
-            setRua('')
-            setBairro('')
-            setCidade('')
-            setUf('')
-            setCep('')
-            setEmail('')
-            setNumero('')
-            console.log("atualizado")
-        })
-        .catch((erro)=>{
-            console.log(erro)
-        });
-    
+    const dados = {
+        'nome': nome,
+        'rua': rua,
+        'bairro': bairro,
+        'cidade': cidade,
+        'uf': uf,
+        'cep': cep,
+        'email': email,
+        'numero': numero
     }
+
+    const atualizar = async () => {
+        try{
+            const response = await axios.put('http://127.0.0.1:8000/api/usuario/' + userId, 
+            dados,
+            { 
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+             })
+                console.log("atualizado");
+                setUserId('');
+                setNome('');
+                setRua('');
+                setBairro('');
+                setCidade('');
+                setUf('');
+                setCep('');
+                setEmail('');
+                setNumero('');
+        }catch(e){
+            console.log(e)
+        }
+            
+            
+};
 
 
     return(
