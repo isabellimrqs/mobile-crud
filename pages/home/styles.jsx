@@ -27,6 +27,15 @@ const styles = StyleSheet.create({
         fontWeight: 500,
         color: "#fff"
     },
+    caixa:{
+        width:'80%',
+        height:40,
+        borderColor: '#000',
+        borderRadius:10,
+        marginTop:10,
+        padding: 10,
+        backgroundColor:'#fff'
+    },
 
 })
 
